@@ -1,20 +1,15 @@
-package main
+package types
 
-type tag string
-
-func (t *tag) string() string {
-	return string("`" + *t + "`")
-}
-
-var abbre = map[string]string{
+// Abbre 缩写
+var Abbre = map[string]string{
 	"id":   "ID",
 	"ip":   "IP",
 	"uid":  "UID",
 	"uuid": "UUID",
 }
 
-// mysqltype mysql type to go type
-var mysqltype = map[string]string{
+// MysqlType2GoType mysql type to go type
+var MysqlType2GoType = map[string]string{
 	"int":        "int",
 	"integer":    "int",
 	"tinyint":    "int",
@@ -46,3 +41,6 @@ var mysqltype = map[string]string{
 	"datetime":   "time.Time",
 	"timestamp":  "time.Time",
 }
+
+// PostgresType2GoType postgres type to go type
+var PostgresType2GoType = map[string]string{}

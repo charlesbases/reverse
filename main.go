@@ -2,18 +2,43 @@ package main
 
 import (
 	"flag"
+	"path/filepath"
 
+	"github.com/BurntSushi/toml"
+	"github.com/charlesbases/reverse/dialect"
 	"github.com/charlesbases/reverse/logger"
+	"github.com/charlesbases/reverse/parser"
+	"github.com/charlesbases/reverse/types"
 )
 
-var f = flag.String("f", "", "config file")
+var f = flag.String("f", "reverse.toml", "config file")
+
+func init() {
+	flag.Parse()
+}
 
 func main() {
-	flag.Parse()
+	run(func(opts *types.Options) {
+		switch opts.Type {
+		case "mysql":
+			parser.Run(dialect.Mysql(opts))
+		case "postgres":
+			parser.Run(dialect.Postgres(opts))
+		}
+	})
+}
 
-	if *f == "" {
-		logger.Fatal("invalid config file")
+// run .
+func run(fn func(opts *types.Options)) {
+	abspath, err := filepath.Abs(*f)
+	if err != nil {
+		logger.Fatal(err)
 	}
 
-	decode(*f).run()
+	var opts = types.DefaultOption()
+	if _, err := toml.DecodeFile(abspath, opts); err != nil {
+		logger.Fatal(err)
+	}
+
+	fn(opts)
 }

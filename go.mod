@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/BurntSushi/toml v0.3.1
-	github.com/charlesbases/colors v0.0.0-20220117095834-874e17564b44
+	github.com/charlesbases/colors v1.0.0
 	github.com/charlesbases/generator v1.0.0
 	gorm.io/driver/mysql v1.3.3
 	gorm.io/driver/postgres v1.3.4

@@ -1,4 +1,4 @@
-package main
+package dialect
 
 import (
 	"context"
@@ -6,12 +6,39 @@ import (
 	"time"
 
 	"github.com/charlesbases/reverse/logger"
+	"github.com/charlesbases/reverse/types"
 	"gorm.io/gorm"
 	glogger "gorm.io/gorm/logger"
 )
 
-// gormOpen open gorm
-func gormOpen(d gorm.Dialector) *gorm.DB {
+type (
+	Table struct {
+		TableName    string         // 表名
+		TableComment string         // 表注释
+		Fields       []*TableColumn // 表字段
+	}
+
+	TableColumn struct {
+		ColumnName    string // 列名
+		ColumnKey     string // 键类别
+		Extra         string // 自增
+		IsNull        string // NOT NULL
+		DataType      string // 类型
+		ColumnType    string // 类型+长度
+		ColumnComment string // 注释
+	}
+)
+
+type Dialect interface {
+	Options() *types.Options
+	Tables() []*Table
+	Schema() string
+	ParseColumnTag(tf *TableColumn) types.Tag
+	ParseColumnType(tf *TableColumn) string
+}
+
+// open gorm.Open
+func open(d gorm.Dialector) *gorm.DB {
 	db, err := gorm.Open(d, &gorm.Config{Logger: new(gorml)})
 	if err != nil {
 		logger.Fatalf(" - db connect failed. %v", err)
