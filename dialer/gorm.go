@@ -1,4 +1,4 @@
-package dialect
+package dialer
 
 import (
 	"context"

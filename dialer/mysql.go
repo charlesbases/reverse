@@ -1,4 +1,4 @@
-package dialect
+package dialer
 
 import (
 	"os"
@@ -65,6 +65,7 @@ func (d *mysqlDialect) ParseColumnTag(tf *TableColumn) types.Tag {
 		ormtag.Append("auto_increment")
 	}
 
+	tag.Append("gorm", ormtag)
 	return tag
 }
 

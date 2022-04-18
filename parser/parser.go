@@ -2,7 +2,7 @@ package parser
 
 import (
 	"github.com/charlesbases/generator"
-	"github.com/charlesbases/reverse/dialect"
+	"github.com/charlesbases/reverse/dialer"
 	"github.com/charlesbases/reverse/types"
 )
 
@@ -10,7 +10,7 @@ type (
 	Struct struct {
 		Name   string
 		Desc   string
-		Table  *dialect.Table
+		Table  *dialer.Table
 		Fields []*StructField
 	}
 
@@ -23,7 +23,7 @@ type (
 )
 
 // parse .
-func (p *Plugin) parse(tables []*dialect.Table) {
+func (p *Plugin) parse(tables []*dialer.Table) {
 	p.structs = make([]*Struct, 0, len(tables))
 
 	for _, table := range tables {
@@ -46,11 +46,11 @@ func (st *Struct) parse(p *Plugin) *Struct {
 }
 
 // fields .
-func (st *Struct) field(p *Plugin, tf *dialect.TableColumn) *StructField {
+func (st *Struct) field(p *Plugin, tf *dialer.TableColumn) *StructField {
 	var sf = &StructField{
 		Name:    camelcase(tf.ColumnName),
-		Tag:     p.dialect.ParseColumnTag(tf),
-		Type:    p.dialect.ParseColumnType(tf),
+		Tag:     p.dialer.ParseColumnTag(tf),
+		Type:    p.dialer.ParseColumnType(tf),
 		Comment: tf.ColumnComment,
 	}
 

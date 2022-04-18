@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 
 	"github.com/BurntSushi/toml"
-	"github.com/charlesbases/reverse/dialect"
+	"github.com/charlesbases/reverse/dialer"
 	"github.com/charlesbases/reverse/logger"
 	"github.com/charlesbases/reverse/parser"
 	"github.com/charlesbases/reverse/types"
@@ -21,9 +21,9 @@ func main() {
 	run(func(opts *types.Options) {
 		switch opts.Type {
 		case "mysql":
-			parser.Run(dialect.Mysql(opts))
+			parser.Run(dialer.Mysql(opts))
 		case "postgres":
-			parser.Run(dialect.Postgres(opts))
+			parser.Run(dialer.Postgres(opts))
 		}
 	})
 }
