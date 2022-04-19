@@ -19,8 +19,9 @@ const (
 
 // mysqlDialect .
 type mysqlDialect struct {
-	opts   *types.Options
-	db     *gorm.DB
+	opts *types.Options
+	db   *gorm.DB
+
 	schema string
 }
 
@@ -54,16 +55,16 @@ func (d *mysqlDialect) ParseColumnTag(tf *TableColumn) types.Tag {
 	// orm
 	var ormtag types.TagType = make([]string, 0)
 	ormtag.Append("column", tf.ColumnName)
-	ormtag.Append("type", tf.ColumnType)
+	// ormtag.Append("type", tf.ColumnType)
 	if tf.IsNull == "NO" {
 		ormtag.Append("not null")
 	}
-	if tf.ColumnKey == "PRI" {
-		ormtag.Append("primary_key")
-	}
-	if tf.Extra == "auto_increment" {
-		ormtag.Append("auto_increment")
-	}
+	// if tf.ColumnKey == "PRI" {
+	// 	ormtag.Append("primary_key")
+	// }
+	// if tf.Extra == "auto_increment" {
+	// 	ormtag.Append("auto_increment")
+	// }
 
 	tag.Append("gorm", ormtag)
 	return tag
@@ -79,7 +80,7 @@ func (d *mysqlDialect) ParseColumnType(tf *TableColumn) string {
 }
 
 func (d *mysqlDialect) Tables() []*Table {
-	return d.fileds(d.tables()...)
+	return d.load(d.tables()...)
 }
 
 // tables parse tables
@@ -94,24 +95,44 @@ func (d *mysqlDialect) tables() []string {
 		logger.Fatal("load tables error: %v", err)
 	}
 	if len(tables) == 0 {
-		logger.Warnf("load tables error: no table in %s", d.schema)
+		logger.Warnf("load tables failed. no table in %s", d.schema)
 		os.Exit(1)
 	}
+
 	sort.Strings(tables)
 	return tables
 }
 
-// fileds parse table columns
-func (d *mysqlDialect) fileds(v ...string) []*Table {
+// load .
+func (d *mysqlDialect) load(v ...string) []*Table {
+	// tables comment
+	var tablesComment = make(map[string]string, len(v))
+	{
+		var expands = make([]*TableExpand, 0, len(v))
+		err := d.db.Table(mysqlSchemaTables).
+			Select([]string{"TABLE_NAME AS table_name", "TABLE_COMMENT AS table_desc"}).
+			Where("TABLE_SCHEMA = ? AND TABLE_NAME IN ?", d.schema, v).
+			Find(&expands).
+			Error
+		if err != nil {
+			logger.Fatal("load tables comment failed. %v", err)
+		}
+
+		for _, item := range expands {
+			tablesComment[item.TableName] = item.TableDesc
+		}
+	}
+
+	// tables columns
 	var tables = make([]*Table, 0, len(v))
+	{
+		for _, item := range v {
+			logger.Debugf("find table: %s", item)
 
-	for _, item := range v {
-		logger.Debugf("find table: %s", item)
+			var table = new(Table)
+			table.TableName = item
 
-		var table = &Table{TableName: item}
-
-		{
-			// 获取表字段信息
+			// table colmuns
 			err := d.db.Table(mysqlSchemaColumns).
 				Select([]string{
 					"TABLE_NAME AS table_name",
@@ -121,33 +142,36 @@ func (d *mysqlDialect) fileds(v ...string) []*Table {
 					"DATA_TYPE AS data_type",
 					"COLUMN_TYPE AS column_type",
 					"IS_NULLABLE AS is_null",
-					"COLUMN_COMMENT AS column_comment",
+					"COLUMN_COMMENT AS column_desc",
 				}).
 				Where("TABLE_SCHEMA = ? AND TABLE_NAME = ?", d.schema, table.TableName).
 				Order("ORDINAL_POSITION").
-				Find(&table.Fields).
+				Find(&table.Columns).
 				Error
 			if err != nil {
-				logger.Fatal("information_columns error: %v", err)
+				logger.Fatalf("load %s.columns failed. %v", item, err)
 			}
+
+			// table columns comment
+			for _, column := range table.Columns {
+				column.ColumnDesc = strings.ReplaceAll(column.ColumnDesc, "\n", "  ")
+				column.ColumnDesc = strings.TrimSpace(column.ColumnDesc)
+
+				if len(column.ColumnDesc) == 0 {
+					column.ColumnDesc = column.ColumnName
+				}
+			}
+
+			// table comment
+			if tableComment, found := tablesComment[item]; found {
+				table.TableDesc = strings.TrimSpace(tableComment)
+			}
+			if len(table.TableDesc) == 0 {
+				table.TableDesc = "."
+			}
+
+			tables = append(tables, table)
 		}
-
-		{
-			// 获取表注释
-			err := d.db.Table(mysqlSchemaTables).
-				Where("TABLE_SCHEMA = ? AND TABLE_NAME = ?", d.schema, table.TableName).
-				Pluck("TABLE_COMMENT", &table.TableComment).
-				Error
-			if err != nil {
-				logger.Fatal("information_tables error: %v", err)
-			}
-
-			if len(strings.TrimSpace(table.TableComment)) == 0 {
-				table.TableComment = "."
-			}
-		}
-
-		tables = append(tables, table)
 	}
 
 	return tables

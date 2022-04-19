@@ -13,19 +13,23 @@ import (
 
 type (
 	Table struct {
-		TableName    string         // 表名
-		TableComment string         // 表注释
-		Fields       []*TableColumn // 表字段
+		TableExpand
+		Columns []*TableColumn // 表字段
+	}
+
+	TableExpand struct {
+		TableName string // 表名
+		TableDesc string // 表注释
 	}
 
 	TableColumn struct {
-		ColumnName    string // 列名
-		ColumnKey     string // 键类别
-		Extra         string // 自增
-		IsNull        string // NOT NULL
-		DataType      string // 类型
-		ColumnType    string // 类型+长度
-		ColumnComment string // 注释
+		ColumnName string // 列名
+		ColumnKey  string // 键类别
+		Extra      string // 自增
+		IsNull     string // NOT NULL
+		DataType   string // 类型
+		ColumnType string // 类型+长度
+		ColumnDesc string // 注释
 	}
 )
 

@@ -15,10 +15,10 @@ type (
 	}
 
 	StructField struct {
-		Name    string    // 字段
-		Tag     types.Tag // 标签
-		Type    string    // 类型
-		Comment string    // 注释
+		Name string    // 字段
+		Tag  types.Tag // 标签
+		Type string    // 类型
+		Desc string    // 注释
 	}
 )
 
@@ -35,10 +35,10 @@ func (p *Plugin) parse(tables []*dialer.Table) {
 // parse .
 func (st *Struct) parse(p *Plugin) *Struct {
 	st.Name = camelcase(st.Table.TableName)
-	st.Desc = st.Table.TableComment
-	st.Fields = make([]*StructField, 0, len(st.Table.Fields))
+	st.Desc = st.Table.TableDesc
+	st.Fields = make([]*StructField, 0, len(st.Table.Columns))
 
-	for _, column := range st.Table.Fields {
+	for _, column := range st.Table.Columns {
 		st.Fields = append(st.Fields, st.field(p, column))
 	}
 
@@ -48,10 +48,10 @@ func (st *Struct) parse(p *Plugin) *Struct {
 // fields .
 func (st *Struct) field(p *Plugin, tf *dialer.TableColumn) *StructField {
 	var sf = &StructField{
-		Name:    camelcase(tf.ColumnName),
-		Tag:     p.dialer.ParseColumnTag(tf),
-		Type:    p.dialer.ParseColumnType(tf),
-		Comment: tf.ColumnComment,
+		Name: camelcase(tf.ColumnName),
+		Tag:  p.dialer.ParseColumnTag(tf),
+		Type: p.dialer.ParseColumnType(tf),
+		Desc: tf.ColumnDesc,
 	}
 
 	switch sf.Type {

@@ -43,4 +43,43 @@ var MysqlType2GoType = map[string]string{
 }
 
 // PostgresType2GoType postgres type to go type
-var PostgresType2GoType = map[string]string{}
+var PostgresType2GoType = map[string]string{
+	"int2":     "int", // 2 字节整数
+	"smallint": "int", // 2 字节整数
+
+	"int4":    "int", // 4 字节整数
+	"integer": "int", // 4 字节整数
+
+	"int8":   "int64", // 8 字节整数
+	"bigint": "int64", // 8 字节整数
+
+	"smallserial": "int",   // int2 自增
+	"serial":      "int",   // int4 自增
+	"bigserial":   "int64", // int8 自增
+
+	"real":             "float64",
+	"float":            "float64",
+	"decimal":          "float64",
+	"numeric":          "float64",
+	"double precision": "float64",
+
+	"varchar": "string",
+	"char":    "string",
+	"text":    "string",
+
+	"boolean": "bool",
+
+	"json":  "string",
+	"jsonb": "string",
+
+	// time
+	"timestamp": "time.Time",
+	"date":      "string",
+	"time":      "string",
+
+	// ip
+	"cidr":     "string",
+	"inet":     "string",
+	"macaddr":  "string",
+	"macaddr8": "string",
+}

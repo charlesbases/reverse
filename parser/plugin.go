@@ -47,11 +47,12 @@ func (p *Plugin) generate() {
 			f.Writer("// ", item.Name, " ", item.Desc)
 			f.Writer("type ", item.Name, " struct {")
 			for _, field := range item.Fields {
-				f.Writer(field.Name, " ", field.Type, " ", field.Tag.String())
+				f.Writer(field.Name, " ", field.Type, " ", field.Tag.String(), " // ", field.Desc)
 			}
 			f.Writer("}")
 			f.Writer()
 
+			f.Writer("// TableName tablename")
 			f.Writer("func (*", item.Name, ") TableName() string {")
 			f.Writer(`return "` + item.Table.TableName + `"`)
 			f.Writer("}")
