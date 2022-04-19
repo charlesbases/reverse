@@ -1,6 +1,7 @@
 package dialer
 
 import (
+	"fmt"
 	"os"
 	"sort"
 	"strings"
@@ -64,8 +65,15 @@ func (d *postgresDialect) ParseColumnTag(tf *TableColumn) types.Tag {
 	// orm
 	var ormtag types.TagType = make([]string, 0)
 	ormtag.Append("column", tf.ColumnName)
-	// if tf.IsNull == "NO" {
-	// 	ormtag.Append("not null")
+	ormtag.Append("type", tf.ColumnType)
+	if tf.IsNull == "NO" {
+		ormtag.Append("not null")
+	}
+	// if tf.ColumnKey == "PRI" {
+	// 	ormtag.Append("primary_key")
+	// }
+	// if tf.Extra == "auto_increment" {
+	// 	ormtag.Append("auto_increment")
 	// }
 
 	tag.Append("gorm", ormtag)
@@ -138,7 +146,7 @@ func (d *postgresDialect) load(v ...string) []*Table {
 					// "? AS column_key",
 					// "? AS extra",
 					"isc.udt_name AS data_type",
-					// "? AS column_type",
+					"isc.character_maximum_length AS column_type",
 					"isc.is_nullable AS is_null",
 					"pgd.description AS column_desc",
 				}).
@@ -152,13 +160,25 @@ func (d *postgresDialect) load(v ...string) []*Table {
 				logger.Fatalf("load %s.columns failed. %v", item, err)
 			}
 
-			// table columns comment
+			// table column expand
 			for _, column := range table.Columns {
-				column.ColumnDesc = strings.ReplaceAll(column.ColumnDesc, "\n", "  ")
-				column.ColumnDesc = strings.TrimSpace(column.ColumnDesc)
+				// table column column_type
+				{
+					if len(column.ColumnType) != 0 {
+						column.ColumnType = fmt.Sprintf("%s(%s)", column.DataType, column.ColumnType)
+					} else {
+						column.ColumnType = column.DataType
+					}
+				}
 
-				if len(column.ColumnDesc) == 0 {
-					column.ColumnDesc = column.ColumnName
+				// table column comment
+				{
+					column.ColumnDesc = strings.ReplaceAll(column.ColumnDesc, "\n", "  ")
+					column.ColumnDesc = strings.TrimSpace(column.ColumnDesc)
+
+					if len(column.ColumnDesc) == 0 {
+						column.ColumnDesc = column.ColumnName
+					}
 				}
 			}
 
