@@ -64,9 +64,9 @@ func (d *postgresDialect) ParseColumnTag(tf *TableColumn) types.Tag {
 	// orm
 	var ormtag types.TagType = make([]string, 0)
 	ormtag.Append("column", tf.ColumnName)
-	if tf.IsNull == "NO" {
-		ormtag.Append("not null")
-	}
+	// if tf.IsNull == "NO" {
+	// 	ormtag.Append("not null")
+	// }
 
 	tag.Append("gorm", ormtag)
 	return tag

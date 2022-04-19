@@ -56,9 +56,9 @@ func (d *mysqlDialect) ParseColumnTag(tf *TableColumn) types.Tag {
 	var ormtag types.TagType = make([]string, 0)
 	ormtag.Append("column", tf.ColumnName)
 	// ormtag.Append("type", tf.ColumnType)
-	if tf.IsNull == "NO" {
-		ormtag.Append("not null")
-	}
+	// if tf.IsNull == "NO" {
+	// 	ormtag.Append("not null")
+	// }
 	// if tf.ColumnKey == "PRI" {
 	// 	ormtag.Append("primary_key")
 	// }
