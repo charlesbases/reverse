@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"path/filepath"
+	"strings"
 
 	"github.com/BurntSushi/toml"
 	"github.com/charlesbases/reverse/dialer"
@@ -19,6 +20,8 @@ func init() {
 
 func main() {
 	run(func(opts *types.Options) {
+		opts.Type = strings.ToLower(strings.TrimSpace(opts.Type))
+
 		switch opts.Type {
 		case "mysql":
 			parser.Run(dialer.Mysql(opts))
