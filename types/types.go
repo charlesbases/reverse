@@ -67,6 +67,7 @@ var PostgresType2GoType = map[string]string{
 	"char":    "string",
 	"text":    "string",
 
+	"bool":    "bool",
 	"boolean": "bool",
 
 	"json":  "string",
