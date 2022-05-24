@@ -57,11 +57,10 @@ var PostgresType2GoType = map[string]string{
 	"serial":      "int",   // int4 自增
 	"bigserial":   "int64", // int8 自增
 
-	"real":             "float64",
-	"float":            "float64",
-	"decimal":          "float64",
-	"numeric":          "float64",
-	"double precision": "float64",
+	"float4":  "float64",
+	"float8":  "float64",
+	"decimal": "float64",
+	"numeric": "float64",
 
 	"varchar": "string",
 	"char":    "string",
