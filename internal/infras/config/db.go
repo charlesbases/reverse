@@ -4,13 +4,14 @@ import (
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/lib/pq"
 	"xorm.io/xorm"
 )
 
 // DefaultDBConfig default db config
 const DefaultDBConfig = `source:
   # mysql: username:password@tcp(127.0.0.1:3306)/dbname?charset=utf8mb4&parseTime=True&loc=Local&timeout=5s&readTimeout=5s&writeTimeout=5s
-  # postgresql: postgres://username:password@127.0.0.1:5432/dbname?sslmode=disable&connect_timeout=5
+  # postgresql: postgres://username:password@127.0.0.1:5432/postgres?sslmode=disable&connect_timeout=5
   dsn: ""
   max_lifetime: 5s
   max_idle_conns: 10

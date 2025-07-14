@@ -14,6 +14,7 @@ func Init() () {
 	rootCommand.AddCommand(versionCommand)
 	rootCommand.AddCommand(initCommand)
 	rootCommand.AddCommand(mysqlCommand)
+	rootCommand.AddCommand(postgresCommand)
 }
 
 // Execute command run

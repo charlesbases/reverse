@@ -4,6 +4,7 @@ go 1.23.11
 
 require (
 	github.com/go-sql-driver/mysql v1.8.1
+	github.com/lib/pq v1.10.7
 	github.com/spf13/cobra v1.9.1
 	github.com/spf13/viper v1.20.1
 	golang.org/x/tools v0.21.1-0.20240508182429-e35e4ccd0d2d
