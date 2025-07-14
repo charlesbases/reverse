@@ -49,9 +49,11 @@ func reverse(ctx context.Context, file string, driver string) error {
 	}
 
 	funcMap := map[string]interface{}{
-		"Date":      func() string { return time.Now().UTC().Format(time.DateTime) },
-		"Version":   func() string { return version },
-		"CamelCase": services.ConverterService.CamelCase,
+		"Date":        func() string { return time.Now().UTC().Format(time.DateTime) },
+		"Version":     func() string { return version },
+		"PackageName": func() string { return filepath.Base(conf.OutputDir) },
+		"CamelCase":   services.ConverterService.CamelCase,
+		"GoType":      services.ConverterService.ConvertColumnType,
 	}
 
 	// multiple_files
