@@ -36,7 +36,7 @@ func (c *converterImpl) ConvertColumnType(t *tables.ColumnTypeEntity) string {
 		return "float32"
 	case Double:
 		return "float64"
-	case Char, NChar, Varchar, NVarchar, TinyText, Text, NText, MediumText, LongText, Enum, Set, Uuid, Clob, SysName:
+	case Char, NChar, Varchar, NVarchar, TinyText, Text, NText, MediumText, LongText, Enum, Set, UUID, Clob, SysName:
 		return "string"
 	case TinyBlob, Blob, LongBlob, Bytea, Binary, MediumBlob, VarBinary, UniqueIdentifier:
 		return "byte"

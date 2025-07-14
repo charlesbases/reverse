@@ -3,8 +3,8 @@ package config
 import (
 	"time"
 
-	_ "github.com/go-sql-driver/mysql"
-	_ "github.com/lib/pq"
+	_ "github.com/go-sql-driver/mysql" // for mysql
+	_ "github.com/lib/pq"              // for postgres
 	"xorm.io/xorm"
 )
 

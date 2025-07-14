@@ -31,7 +31,7 @@ var (
 	Clob             = "CLOB"
 	MediumText       = "MEDIUMTEXT"
 	LongText         = "LONGTEXT"
-	Uuid             = "UUID"
+	UUID             = "UUID"
 	UniqueIdentifier = "UNIQUEIDENTIFIER"
 	SysName          = "SYSNAME"
 
@@ -66,7 +66,7 @@ var (
 	Serial    = "SERIAL"
 	BigSerial = "BIGSERIAL"
 
-	Json  = "JSON"
+	JSON  = "JSON"
 	Jsonb = "JSONB"
 
 	XML   = "XML"
